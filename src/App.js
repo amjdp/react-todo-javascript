@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 
 import { query, collection, doc, deleteDoc, updateDoc,
-  getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+  getDocs, addDoc, serverTimestamp, docRef } from 'firebase/firestore';
 import { db } from "./firebase";
 import AddTodo from "./components/AddTodo";
 import loading from './loading.gif';
@@ -65,18 +65,25 @@ function App() {
     post();
   }
 
+  
     // Close snack bar
     function handleSbClose(){
       setSbOpen(false);
     }
   
 
+    function deleteTodo(id){
+        const docRef = doc(db, collectionName, id);
+        deleteDoc(docRef);
+        fetchData();
+    }
+
   return (
     <div className="App">
          <Typography variant="h3">To do list</Typography><hr/>
          <div><AddTodo onAddTodo={addTodo}/></div>
          {  isLoading && <img src={loading} alt="Loading..."/>}
-      { !isLoading && <TodoList todos={todos}/>}
+      { !isLoading && <TodoList todos={todos} onDelete={deleteTodo}/>}
       <Footer/>
       {/* Display message */}
       <Snackbar
