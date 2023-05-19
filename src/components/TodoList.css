@@ -1,0 +1,9 @@
+.todo{
+    border: 2px solid #003599;
+    border-radius: 10px;
+    margin-bottom: 10px !important ;
+    margin-right: 50px !important;
+    display: flex;
+    color: white;
+    background-color: #795548;
+  }
