@@ -14,9 +14,9 @@ function TodoList(props) {
                     {todo.item.title}
                     </ListItem>
             {/* Pass id of todo to parent on clicking delete button */}
-            {/* <DeleteForever onClick = {()=>{props.onDelete(todo.id)}} /> */}
+            <DeleteForever onClick = {()=>{props.onDelete(todo.id)}} />
             {/* Pass data to parent on clickin edit */}
-            {/* <Edit onClick={()=>{props.onEdit(todo)}}/> */}
+            <Edit onClick={()=>{props.onEdit(todo)}}/>
         </List> )
       
    );

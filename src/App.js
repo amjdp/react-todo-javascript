@@ -11,12 +11,13 @@ import {
 } from "@material-ui/core";
 
 import { query, collection, doc, deleteDoc, updateDoc,
-  getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
+  getDocs, addDoc, serverTimestamp, docRef } from 'firebase/firestore';
 import { db } from "./firebase";
 import AddTodo from "./components/AddTodo";
 import loading from './loading.gif';
 import TodoList from "./components/TodoList";
 import Footer from "./components/Footer";
+import UpdateTodo from "./components/UpdateTodo";
 
 const collectionName = "todo_list";
 const collectionRef = collection(db, collectionName);
@@ -27,8 +28,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true); // To show loader at the time of loading
   const [sbOpen, setSbOpen] = useState(false); // Show/hide snackbar
 
-  // const [isEditEnabled, setIsEditEnabled] = useState(false); //Show edit screen
-  // const [currentTodo, setCurrentTodo] = useState(""); // To do for updating
+  const [isEditEnabled, setIsEditEnabled] = useState(false); //Show edit screen
+  const [currentTodo, setCurrentTodo] = useState(""); // To do for updating
 
   useEffect(() => {
     fetchData();
@@ -44,7 +45,7 @@ function App() {
     });
     setTodos(data);
     setIsLoading(false);
-    // console.log(data);
+    console.log(data);
     // console.log(todos);
   }
 
@@ -65,18 +66,55 @@ function App() {
     post();
   }
 
+  
     // Close snack bar
     function handleSbClose(){
       setSbOpen(false);
     }
   
 
+    function deleteTodo(id){
+        const docRef = doc(db, collectionName, id);
+        deleteDoc(docRef);
+        fetchData();
+    }
+
+    // Show edit screen
+  function handleEdit(eTodo){
+    setIsEditEnabled(true);
+    setCurrentTodo(eTodo);
+  }
+
+
+  
+
+  // Close update screen
+  function cancelUpdate(){
+    setIsEditEnabled(false);
+  }
+
+    // Update todo
+    function handleUpdate(uTodo){
+      if(uTodo===""){
+        setSbOpen(true);
+        return;
+      }
+      const docRef = doc(db, collectionName, currentTodo.id);
+      updateDoc(docRef, {"title":uTodo})
+      fetchData();
+      setIsEditEnabled(false);
+    }
+  
+
   return (
     <div className="App">
          <Typography variant="h3">To do list</Typography><hr/>
-         <div><AddTodo onAddTodo={addTodo}/></div>
+         { isEditEnabled ? <UpdateTodo data={currentTodo} 
+      onCancel={cancelUpdate} onUpdate={handleUpdate}/>:
+         <div><AddTodo onAddTodo={addTodo}/>
          {  isLoading && <img src={loading} alt="Loading..."/>}
-      { !isLoading && <TodoList todos={todos}/>}
+      { !isLoading && <TodoList todos={todos} onDelete={deleteTodo}  onEdit={handleEdit}/>}
+      </div>}
       <Footer/>
       {/* Display message */}
       <Snackbar
