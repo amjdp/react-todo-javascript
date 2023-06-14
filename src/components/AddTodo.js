@@ -12,7 +12,7 @@ function AddTodo(props) {
     const handleAddTodo = (event)=>{
         event.preventDefault();
         props.onAddTodo(newTodo);
-        setNewTodo("")
+        setNewTodo("");
        }
 
    return (
